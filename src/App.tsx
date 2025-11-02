@@ -36,15 +36,10 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
 import { PlusCircle, Trash2, Search } from "lucide-react";
+import TodoForm from "./components/TodoForm";
+import TodoInlineEditor from "./components/TodoInlineEditor";
+import QuickAdd from "./components/QuickAdd";
 
 // Helper
 const uid = () => Math.random().toString(36).slice(2, 9);
@@ -396,129 +391,5 @@ export default function App() {
                 </aside>
             </div>
         </div>
-    );
-}
-
-// Component definitions...
-function QuickAdd({ onAdd }: { onAdd: (title: string) => void }) {
-    const [val, setVal] = useState("");
-    return (
-        <form
-            onSubmit={(e) => {
-                e.preventDefault();
-                if (!val.trim()) return;
-                onAdd(val.trim());
-                setVal("");
-            }}
-            className="flex gap-2"
-        >
-            <Input
-                value={val}
-                onChange={(e) => setVal(e.target.value)}
-                placeholder="Task title"
-            />
-            <Button type="submit">Add</Button>
-        </form>
-    );
-}
-
-function TodoInlineEditor({
-    todo,
-    onSave,
-    onDelete,
-}: {
-    todo: Todo;
-    onSave: (t: Todo) => void;
-    onDelete: () => void;
-}) {
-    const [title, setTitle] = useState(todo.title);
-    const [notes, setNotes] = useState(todo.notes || "");
-    const [priority, setPriority] = useState<Todo["priority"]>(
-        todo.priority || "medium"
-    );
-    const [dueDate, setDueDate] = useState(todo.dueDate || "");
-
-    return (
-        <div className="flex flex-col gap-3">
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} />
-            <Textarea
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                placeholder="Notes"
-            />
-
-            <div className="flex items-center justify-between gap-2">
-                <Select
-                    value={priority}
-                    onValueChange={(v) => setPriority(v as Todo["priority"])}
-                >
-                    <SelectTrigger className="w-40">
-                        <SelectValue placeholder="Priority" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="medium">Medium</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                    </SelectContent>
-                </Select>
-
-                <Input
-                    type="date"
-                    value={dueDate?.slice(0, 10)}
-                    onChange={(e) =>
-                        setDueDate(
-                            e.target.value
-                                ? new Date(e.target.value).toISOString()
-                                : ""
-                        )
-                    }
-                />
-            </div>
-
-            <div className="flex items-center gap-2 justify-end">
-                <Button variant="ghost" onClick={onDelete}>
-                    <Trash2 className="w-4 h-4" />
-                </Button>
-                <Button
-                    onClick={() => {
-                        onSave({ ...todo, title, notes, priority, dueDate });
-                    }}
-                >
-                    Save
-                </Button>
-            </div>
-        </div>
-    );
-}
-
-function TodoForm({
-    onSave,
-    onCancel,
-}: {
-    onSave: (values: { title: string }) => void;
-    onCancel: () => void;
-}) {
-    const [title, setTitle] = useState("");
-    return (
-        <form
-            onSubmit={(e) => {
-                e.preventDefault();
-                if (!title.trim()) return;
-                onSave({ title: title.trim() });
-            }}
-            className="flex flex-col gap-3"
-        >
-            <Input
-                placeholder="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
-            <div className="flex gap-2 justify-end">
-                <Button variant="ghost" onClick={onCancel} type="button">
-                    Cancel
-                </Button>
-                <Button type="submit">Create</Button>
-            </div>
-        </form>
     );
 }
